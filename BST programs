@@ -1,0 +1,98 @@
+# Node class
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+
+# BST class
+class BST:
+    def __init__(self):
+        self.root = None
+
+    # Insertion operation
+    def insert(self, key):
+        self.root = self._insert_recursive(self.root, key)
+
+    def _insert_recursive(self, node, key):
+        if node is None:
+            return Node(key)
+
+        if key < node.key:
+            node.left = self._insert_recursive(node.left, key)
+        elif key > node.key:
+            node.right = self._insert_recursive(node.right, key)
+
+        return node
+
+    # Deletion operation
+    def delete(self, key):
+        self.root = self._delete_recursive(self.root, key)
+
+    def _delete_recursive(self, node, key):
+        if node is None:
+            return node
+
+        if key < node.key:
+            node.left = self._delete_recursive(node.left, key)
+        elif key > node.key:
+            node.right = self._delete_recursive(node.right, key)
+        else:
+            # Case 1: Node has no child or only one child
+            if node.left is None:
+                return node.right
+            elif node.right is None:
+                return node.left
+
+            # Case 2: Node has two children
+            # Find the inorder successor (smallest value in the right subtree)
+            successor = self._find_min(node.right)
+            node.key = successor.key
+            node.right = self._delete_recursive(node.right, successor.key)
+
+        return node
+
+    def _find_min(self, node):
+        current = node
+        while current.left is not None:
+            current = current.left
+        return current
+
+    # Inorder traversal
+    def inorder_traversal(self):
+        self._inorder_recursive(self.root)
+
+    def _inorder_recursive(self, node):
+        if node is not None:
+            self._inorder_recursive(node.left)
+            print(node.key, end=' ')
+            self._inorder_recursive(node.right)
+
+
+# Example usage
+if __name__ == '__main__':
+    # Create a BST
+    bst = BST()
+
+    # Insert elements
+    bst.insert(50)
+    bst.insert(30)
+    bst.insert(20)
+    bst.insert(40)
+    bst.insert(70)
+    bst.insert(60)
+    bst.insert(80)
+
+    # Perform inorder traversal
+    print('Inorder traversal:')
+    bst.inorder_traversal()
+    print('\n')
+
+    # Delete elements
+    bst.delete(20)
+    bst.delete(70)
+
+    # Perform inorder traversal after deletion
+    print('Inorder traversal after deletion:')
+    bst.inorder_traversal()
+    print('\n')
